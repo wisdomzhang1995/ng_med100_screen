@@ -1,0 +1,4 @@
+
+
+class DjangoProtocol(object):
+    pass
