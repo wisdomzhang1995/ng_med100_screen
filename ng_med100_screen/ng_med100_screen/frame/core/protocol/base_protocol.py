@@ -17,4 +17,5 @@ class ServiceManager(object):
 
 
 class BaseProtocol(ServiceManager):
-    pass
+    def protocol_run(self, request):
+        pass
