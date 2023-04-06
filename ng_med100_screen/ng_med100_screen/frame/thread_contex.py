@@ -14,11 +14,13 @@ class RequestObj(object):
 class RequestContext(object):
 
     def __enter__(self):
-        pass
+        self.push()
+        return self
 
     @staticmethod
     def push():
         ident = get_ident()
+        print(f"the ident is {ident}")
         request_obj = RequestObj()
         thread_context_map[ident] = request_obj
 

@@ -11,6 +11,6 @@ protocol = DjangoProtocol()
 def router(request):
     with RequestContext():
         _request.request = request
-
+        result = protocol.protocol_run(request)
         resp = HttpResponse(json.dumps({"msg": "WisdomZhang", "status": 0}))
         return resp
