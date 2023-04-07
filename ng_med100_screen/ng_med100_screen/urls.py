@@ -21,6 +21,6 @@ from ng_med100_screen.frame.main import router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # url(r'^api/verify', verify_pic),
+    # url(r'^apis/verify', verify_pic),
     re_path('.+', router)
 ]

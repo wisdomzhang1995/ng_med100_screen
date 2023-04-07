@@ -22,15 +22,18 @@ class DjangoProtocol(BaseProtocol):
         return {'status': -e.get_code(), 'msg': e.get_msg(), 'data': ''}
 
     def get_api_str(self, path_info):
-        return path_info.replace("/api/", "").rstrip("/")
+        return path_info.replace('/api/', '').rstrip("/")
+
+    def set_protocol(self):
+        pass
 
     def extract_params(self, request):
-        for k, v in request.POST.items():
-            print(f"POST {k}: {v}")
-        for k, v in request.META.items():
-            print(f"META {k}: {v}")
-        api_str = self.get_api_str(request.path_info)
+        # for k, v in request.POST.items():
+        #     print(f"POST {k}: {v}")
+        # for k, v in request.META.items():
+        #     print(f"META {k}: {v}")
         meta = request.META
+        api_str = self.get_api_str(meta.get("PATH_INFO"))
         jwt_token = meta.get("HTTP_AUTHORIZATION")
         try:
             request_params = {key: value for key, value in json.loads(request.body.decode("utf-8")).items}

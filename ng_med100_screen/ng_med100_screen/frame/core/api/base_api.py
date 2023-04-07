@@ -1,8 +1,37 @@
 import json
+import os
+import pathlib
 
 import pysnooper
 
+from ng_med100_screen.apis import api_abs_path
 from ng_med100_screen.frame.tools.redis.redis_operator import redis_sys
+
+
+class ApiInterface(object):
+
+    @classmethod
+    def get_name(cls, level=3):
+        api_name = cls.__name__.lower()
+        rel = pathlib.Path(os.sep.join(cls.__module__.split('.'))).relative_to(
+            pathlib.Path(api_abs_path).parent)
+        namespace = str(rel).split(os.sep, level)
+        namespace = namespace if namespace[-1] != "api" else namespace[:-1]
+        namespace.append(api_name)
+        # todo dong: make the frame looks normally
+        return '.'.join(namespace).replace('.', '/')
+
+    @classmethod
+    def get_desc(cls):
+        return "这是一个测试的desc"
+
+    @classmethod
+    def get_author(cls):
+        return "djd"
+
+    @classmethod
+    def get_version(cls):
+        return "v1.0"
 
 
 class ApiHelper(object):
@@ -17,7 +46,7 @@ class ApiHelper(object):
         return cls._service
 
 
-class BaseApi(ApiHelper):
+class BaseApi(ApiHelper, ApiInterface):
     request = None
     response = None
     # def __init__(self):
@@ -39,7 +68,7 @@ class BaseApi(ApiHelper):
         raise NotImplementedError('Please implement this interface in subclass')
 
     def parse(self, request, params):
-        return request
+        return params
 
     def enhance_execute(self):
         if redis_sys.get("awesome", invert=int) == 310:
@@ -48,8 +77,12 @@ class BaseApi(ApiHelper):
             return pysnooper.snoop(**debug_kwargs)(self.execute)
         return self.execute
 
+    def deserialize(self, response, result):
+        return result
+
     def api_run(self, params):
         request = self.parse(self.request, params)
+        request = params
         self.authorized(request, params)
         result = self.enhance_execute()(request)
         respond_data = self.deserialize(self.response, result)
