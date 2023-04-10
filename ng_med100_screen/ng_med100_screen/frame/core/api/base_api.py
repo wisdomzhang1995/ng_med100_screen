@@ -68,6 +68,17 @@ class BaseApi(ApiHelper, ApiInterface):
         raise NotImplementedError('Please implement this interface in subclass')
 
     def parse(self, request, params):
+        for key, helper in request.get_fields().items():
+            if key not in params:
+                if helper.is_need() or (
+                        helper.is_need() and helper.get_field().is_required()):
+                    pass
+            else:
+                try:
+                    if helper.get_field().parse_it():
+                        setattr(request, key, params[key])
+                except Exception as e:
+                    pass
         return params
 
     def enhance_execute(self):

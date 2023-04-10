@@ -1,0 +1,27 @@
+from ng_med100_screen.frame.core.field.adapter import AdapterField
+
+
+class ParseField(AdapterField):
+
+    def __init__(self, field_cls, *args, **kwargs):
+        super(ParseField, self).__init__(field_cls, *args, **kwargs)
+
+    def execute(self, value):
+        return self.get_field().parse(value)
+
+
+class Parser(object):
+
+    def get_fields(self):
+        if not hasattr(self, '_fields'):
+            self._fields = {}
+            print("HHHHHHHHHHHHHHHHHHHHH", self.__dict__.items())
+            for name, value in self.__dict__.items():
+                if isinstance(value, ParseField):
+                    self._fields[name] = value
+        return self._fields
+
+    @classmethod
+    def get_field(self, name):
+        fields = self.get_fields()
+        return fields.get(name, None)

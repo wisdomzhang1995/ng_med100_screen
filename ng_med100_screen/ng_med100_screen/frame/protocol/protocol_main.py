@@ -1,10 +1,14 @@
 import json
 
+from ng_med100_screen.frame.core.field.base import CharField
 from ng_med100_screen.frame.core.protocol.base_protocol import BaseProtocol
+from ng_med100_screen.frame.core.protocol.parser import Parser, ParseField
 
 
 class DjangoProtocol(BaseProtocol):
 
+    parser = Parser()
+    parser.flag = ParseField(CharField, desc="服务标识")
     _upload_files = "_upload_files"
     _remote_ip = "_remote_ip"
     _agent = "_agent"

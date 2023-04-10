@@ -1,1 +1,54 @@
-/ng_med100_screen/.idea/
+# python :
+.idea/
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+*.log
+
+# svn :
+.svn
+
+# git :
+
+#.gitignore
+settings_local.py
+ng_ifw/settings_local.py
+#migrations/*
+#ng_ifw/model/migrations/*
+ws_test.html
+myapp.log
+start.bat
+tools/settings.py
+analysis/data
+analysis/graphic
+api_docs.json
+
+# project:
+.amateras
+.pydevproject
+.project
+*.bak
+.settings
+
+# other :
+*.orig
+*.bak
+
+# sublime text project
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+
+# extra directory :
+support
+node_modules
+.idea/
+
+# pics
+*.jpg
+*.csv
+*.xlsx
+
+# redis data
+*.rdb
