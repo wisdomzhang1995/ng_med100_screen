@@ -3,6 +3,7 @@ from ng_med100_screen.frame.core.api.authorization import NoAuthrizedApi
 from ng_med100_screen.frame.core.api.request_parse import RequestFieldSet, RequestField
 from ng_med100_screen.frame.core.api.response_parse import ResponseFieldSet
 from ng_med100_screen.frame.core.field.base import DictField, IntField, CharField, DatetimeField
+from model.models import TMoneySiteCycle
 
 
 class GetDisplayCA(NoAuthrizedApi):
@@ -44,7 +45,10 @@ class GetDisplayCA(NoAuthrizedApi):
         return False
 
     def execute(self, request):
-        return request
+        limit = TMoneySiteCycle.objects.filter().all()
+        limit_data = [l.as_dict() for l in limit[:2]]
+        print("qqqqqqqqqqqqqqqqqqqqqq", limit_data)
+        return limit_data
 
     def fill(self, response, data):
         return data

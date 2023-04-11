@@ -93,7 +93,7 @@ class BaseApi(ApiHelper, ApiInterface):
 
     def api_run(self, params):
         request = self.parse(self.request, params)
-        request = params
+        print("=========================GGGGGGGGGGGGGGGGGGGGGGGGG", request)
         self.authorized(request, params)
         result = self.enhance_execute()(request)
         respond_data = self.deserialize(self.response, result)
