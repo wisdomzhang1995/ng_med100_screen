@@ -21,10 +21,32 @@ class AdapterField(object):
         return self.get_field().get_desc()
 
 
-
 class AdapterFieldSet(object):
     _fields = None
     _field_cls = None
+
+    def __init__(self):
+        self._fields = self.get_fields()
+
+    def __setattr__(self, name, value):
+        _fields = super(AdapterField, self).__getattribute__("_fields")
+        if name in _fields:
+            value = _fields[name].execute(value)
+        super(AdapterFieldSet, self).__setattr__(name, value)
+
+    def __getattribute__(self, name):
+        if not (name.startswith('__') and name.endswith('__')):
+            attr_list = name.split("__")
+            first_attr = attr_list[0]
+            end_attr = attr_list[-1]
+
+            _fields = super(AdapterFieldSet, self).__getattribute__('_fields')
+            if _fields is not None and first_attr in _fields:
+                if first_attr != end_attr:
+                    helper = _fields[first_attr]
+                    return getattr(helper.get_field(), end_attr)
+
+        return super(AdapterFieldSet, self).__getattribute__(name)
 
     @classmethod
     def get_fields(cls):
