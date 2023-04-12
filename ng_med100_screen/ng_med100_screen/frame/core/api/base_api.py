@@ -12,13 +12,15 @@ class ApiInterface(object):
 
     @classmethod
     def get_name(cls, level=3):
-        api_name = cls.__name__.lower()
+        cls_name = cls.__name__
+        api_name = cls_name[0].lower() + cls_name[1:]
         rel = pathlib.Path(os.sep.join(cls.__module__.split('.'))).relative_to(
             pathlib.Path(api_abs_path).parent)
         namespace = str(rel).split(os.sep, level)
         namespace = namespace if namespace[-1] != "api" else namespace[:-1]
         namespace.append(api_name)
-        # todo dong: make the frame looks normally
+        # todo shun: make the frame looks normally
+        print("QQQQQQQQQQQQQQQQQQQQQ", namespace)
         return '.'.join(namespace).replace('.', '/')
 
     @classmethod

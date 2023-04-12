@@ -2,6 +2,7 @@ import json
 
 from django.http import HttpResponse
 
+from ng_med100_screen.apis.platform_register import platform_service
 from frame.common.json_encoder import DateEncoder
 from ng_med100_screen.apis.user_register import user_service
 from ng_med100_screen.frame.protocol.protocol_main import DjangoProtocol
@@ -9,6 +10,7 @@ from ng_med100_screen.frame.thread_contex import RequestContext, _request
 
 protocol = DjangoProtocol()
 protocol.add(user_service)
+protocol.add(platform_service)
 print(f"ffffffffffffffffffGGGGGGGGGGGGGGGGGGGGGGGGGG", protocol._service_map)
 
 

@@ -5,8 +5,15 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+import datetime
+
+from django.conf import settings
 from django.db import models
+from django.db.models import Count
+
+from frame.tools.public_function import format_time
 from model.base import BaseModel
+from django.utils import timezone
 
 
 class Slides(BaseModel):
@@ -796,6 +803,15 @@ class TCase(BaseModel):
     class Meta:
         managed = False
         db_table = 't_case'
+
+    @classmethod
+    def get_realtime_queryset(cls):
+        if settings.DEBUG:
+            return cls.search()
+        start_time = timezone.now()
+        print("QWWWWWWWWWWWWWWWWWWWWWW", start_time)
+        end_time = start_time - datetime.timedelta(days=2)
+        return cls.search(create_time__gte=format_time(start_time), create_time__lte=format_time(end_time))
 
 
 class TCaseAdvice(BaseModel):

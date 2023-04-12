@@ -104,6 +104,10 @@ class BaseModel(Model):
         return res_mapping
 
     @classmethod
+    def annotate_field_count(cls, queryset, field_name):
+        return queryset.values(field_name).annotate(count=Count("*"))
+
+    @classmethod
     def single_col_list(cls, col, flat=True):
         return cls.objects.values_list(col, flat=flat)
 
