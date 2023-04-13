@@ -15,12 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 
-from ng_med100_screen.frame.main import router
+from ng_med100_screen.frame.main import router, api_doc
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # url(r'^apis/verify', verify_pic),
-    re_path('.+', router)
+    url(r'^api/', include('frame.urls')),
 ]

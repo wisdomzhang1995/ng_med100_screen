@@ -18,6 +18,11 @@ class BaseApiService(Singleton):
     def get_flag(cls):
         raise NotImplementedError('Please implement this interface in subclass')
 
+    def get_apis(self):
+        if self._api_mapping is None:
+            return []
+        return self._api_mapping.values()
+
     def add(self, *apis):
         if self._api_mapping is None:
             self._api_mapping = {}

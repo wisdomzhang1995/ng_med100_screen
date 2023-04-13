@@ -17,6 +17,7 @@ from pathlib import Path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print("base dir ========================", BASE_DIR)
 TUOEN_DIR = os.path.join(BASE_DIR, "ng_med100_screen")
+STATIC_FILES_ROOT = os.path.join(BASE_DIR, "static_files")
 sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, TUOEN_DIR)
 
@@ -57,10 +58,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ng_med100_screen.urls'
 
+API_TEMPLATE_DIR = os.path.join(TUOEN_DIR, "frame/template")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+         'DIRS': [API_TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

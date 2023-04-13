@@ -4,6 +4,7 @@ import pathlib
 
 import pysnooper
 
+from frame.core.api.response_parse import ResponseField
 from ng_med100_screen.apis import api_abs_path
 from ng_med100_screen.frame.tools.redis.redis_operator import redis_sys
 
@@ -69,6 +70,9 @@ class BaseApi(ApiHelper, ApiInterface):
     def execute(self, *args, **kwargs):
         raise NotImplementedError('Please implement this interface in subclass')
 
+    def fill(self, response, *args):
+        raise NotImplementedError('Please implement this interface in subclass')
+
     def parse(self, request, params):
         for key, helper in request.get_fields().items():
             if key not in params:
@@ -90,14 +94,24 @@ class BaseApi(ApiHelper, ApiInterface):
             return pysnooper.snoop(**debug_kwargs)(self.execute)
         return self.execute
 
-    def deserialize(self, response, result):
-        return result
+    def pack(self, response, result):
+        args = result if type(result) is tuple else [result]
+        if args:
+            response = self.fill(response, *args)
+        pack_data = {}
+        for key in response.get_fields():
+            value = getattr(response, key)
+            if isinstance(value, ResponseField):
+                raise Exception("response lose parameter {}".format(key))
+            pack_data[key] = value
+
+        return pack_data
 
     def api_run(self, params):
         request = self.parse(self.request, params)
         print("=========================GGGGGGGGGGGGGGGGGGGGGGGGG", request)
         self.authorized(request, params)
         result = self.enhance_execute()(request)
-        respond_data = self.deserialize(self.response, result)
+        respond_data = self.pack(self.response, result)
         return respond_data
 

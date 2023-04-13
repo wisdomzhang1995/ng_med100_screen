@@ -17,9 +17,9 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, re_path
 
-from ng_med100_screen.frame.main import router
+from ng_med100_screen.frame.main import router, api_doc
 
 urlpatterns = [
-    # url(r'^api_doc', api_doc),
+    url(r'^api_doc', api_doc),
     re_path('.+', router)
 ]

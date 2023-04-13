@@ -34,18 +34,18 @@ class BaseProtocol(Singleton, ServiceManager):
 
     def parse_request_data(self, request_params):
         data = request_params.copy()
-        pro_parms = {}
+        pro_params = {}
         fields = self.parser.get_fields()
         for field_name, field_parser in fields.items():
             if field_name in data:
                 value = data.pop(field_name)
                 try:
-                    pro_parms[field_name] = field_parser.execute(value)
+                    pro_params[field_name] = field_parser.execute(value)
                 except Exception as e:
                     print(f"fS {Exception}")
 
         print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", fields)
-        return DictWrapper(request_params)
+        return DictWrapper(pro_params), DictWrapper(request_params)
 
     def get_service_flag(self, pro_params):
         raise NotImplementedError('Please implement this interface in subclass')
@@ -56,9 +56,9 @@ class BaseProtocol(Singleton, ServiceManager):
     def protocol_run(self, request):
         try:
             file_data, request_params = self.extract_params(request)
-            api_params = self.parse_request_data(request_params)
-            print("GGGGGGGGGGGGGGGGGGGGGGGGGGGG", api_params)
-            service_str = self.get_service_flag(api_params)
+            pro_params, api_params = self.parse_request_data(request_params)
+            print("GGGGGGGGGGGGGGGGGGGGGGGGGGGG", pro_params)
+            service_str = self.get_service_flag(pro_params)
             api_str = api_params.api
             api_params.update(flag=service_str)
             api_params.update(file_data)

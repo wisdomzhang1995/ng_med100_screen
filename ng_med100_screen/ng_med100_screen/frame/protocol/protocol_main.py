@@ -1,14 +1,19 @@
 import json
 
-from ng_med100_screen.frame.core.field.base import CharField
+from frame.core.protocol.responser import Responser, ResponseField
+from ng_med100_screen.frame.core.field.base import CharField, IntField
 from ng_med100_screen.frame.core.protocol.base_protocol import BaseProtocol
-from ng_med100_screen.frame.core.protocol.parser import Parser, ParseField
+from frame.core.protocol.parser import Parser, ParseField
 
 
 class DjangoProtocol(BaseProtocol):
 
     parser = Parser()
     parser.flag = ParseField(CharField, desc="服务标识")
+    responser = Responser()
+    responser.status = ResponseField(IntField, desc="状态码")
+    responser.msg = ResponseField(CharField, desc="错误消息")
+
     _upload_files = "_upload_files"
     _remote_ip = "_remote_ip"
     _agent = "_agent"
@@ -39,9 +44,11 @@ class DjangoProtocol(BaseProtocol):
         meta = request.META
         api_str = self.get_api_str(meta.get("PATH_INFO"))
         jwt_token = meta.get("HTTP_AUTHORIZATION")
+        print("==============================", request.body, request.POST)
         try:
-            request_params = {key: value for key, value in json.loads(request.body.decode("utf-8")).items}
-        except:
+            request_params = {key: value for key, value in json.loads(request.body.decode("utf-8")).items()}
+        except Exception as e:
+            print("zs----------------------------", e)
             request_params = {key: value for key, value in request.POST.items()}
         request_params.update({"api": api_str, "jwt_token": jwt_token})
         remote_ip = meta['HTTP_X_FORWARDED_FOR'] if 'HTTP_X_FORWARDED_FOR' in meta else meta['REMOTE_ADDR']
