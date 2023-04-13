@@ -1,5 +1,6 @@
 from ng_med100_screen.frame.core.service.base_service import BaseApiService
 
+
 class PlatformService(BaseApiService):
 
     @classmethod
@@ -25,6 +26,6 @@ class PlatformService(BaseApiService):
 
 platform_service = PlatformService()
 
-from ng_med100_screen.apis.platform.overview.api import GetCaseStatusCount, GetCaseDiagnosisTypeCount, GetCaseDiagnosisResult
-platform_service.add(GetCaseStatusCount, GetCaseDiagnosisTypeCount, GetCaseDiagnosisResult)
+from ng_med100_screen.apis.platform.overview.api import GetCaseStatusCount, GetCaseDiagnosisTypeCount, GetCaseDiagnosisResult, GetCaseStatisticsCount
+platform_service.add(GetCaseStatusCount, GetCaseDiagnosisTypeCount, GetCaseDiagnosisResult, GetCaseStatisticsCount)
 print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG==========================", platform_service._api_mapping)
