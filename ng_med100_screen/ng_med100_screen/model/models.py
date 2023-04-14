@@ -16,6 +16,12 @@ from model.base import BaseModel
 from django.utils import timezone
 
 
+class RealtimeModel(BaseModel):
+
+    class Meta:
+        abstract = True
+
+
 class Slides(BaseModel):
     remark = models.TextField(db_collation='utf8mb3_general_ci', blank=True, null=True)
     scantime = models.IntegerField(blank=True, null=True)
@@ -804,15 +810,6 @@ class TCase(BaseModel):
         managed = False
         db_table = 't_case'
 
-    @classmethod
-    def get_realtime_queryset(cls):
-        if settings.DEBUG:
-            return cls.search()
-        start_time = timezone.now()
-        print("QWWWWWWWWWWWWWWWWWWWWWW", start_time)
-        end_time = start_time - datetime.timedelta(days=2)
-        return cls.search(create_time__gte=format_time(start_time), create_time__lte=format_time(end_time))
-
 
 class TCaseAdvice(BaseModel):
     advice_id = models.AutoField(primary_key=True)
@@ -1495,8 +1492,8 @@ class TCaseReportSignCallbackLog(BaseModel):
 class TCaseSample(BaseModel):
     case_sample_id = models.AutoField(primary_key=True)
     case = models.ForeignKey(TCase, models.DO_NOTHING, blank=True, null=True)
-    organ_id = models.IntegerField(blank=True, null=True)
-    sample_id = models.IntegerField(blank=True, null=True)
+    organ = models.ForeignKey(to="TDictOrgan", on_delete=models.DO_NOTHING, related_name="case_sample_organ", db_constraint=False, null=True)
+    sample = models.ForeignKey(to="TDictSample", on_delete=models.DO_NOTHING, related_name="case_sample_sample", db_constraint=False, null=True)
     sample_name = models.CharField(max_length=50, blank=True, null=True)
     sample_desc = models.CharField(max_length=100, blank=True, null=True)
     sample_index = models.IntegerField(blank=True, null=True)
@@ -1771,7 +1768,7 @@ class TDictIhcItem(BaseModel):
 
 class TDictOrgan(BaseModel):
     organ_id = models.AutoField(primary_key=True)
-    system = models.ForeignKey('TDictSystem', models.DO_NOTHING, blank=True, null=True)
+    system = models.ForeignKey('TDictSystem', on_delete=models.DO_NOTHING, related_name="dict_organ_system", db_constraint=False, null=True)
     organ_name = models.CharField(max_length=50, blank=True, null=True)
     is_delete = models.IntegerField(blank=True, null=True)
     sort_index = models.FloatField(blank=True, null=True)

@@ -27,7 +27,6 @@ class GetCaseStatusCount(NoAuthrizedApi):
         return 1
 
     def execute(self, request):
-        print("qqqqqqqqqqqqqqqqqqqqqq")
         statistics_status_list = OverviewManager.get_case_status_count()
         return statistics_status_list
 
@@ -53,7 +52,6 @@ class GetCaseDiagnosisTypeCount(NoAuthrizedApi):
         return 1
 
     def execute(self, request):
-        print("qqqqqqqqqqqqqqqqqqqqqq")
         diagnosis_type_count_list = OverviewManager.get_case_diagnosis_type_count()
         return diagnosis_type_count_list
 
@@ -78,7 +76,6 @@ class GetCaseDiagnosisResult(NoAuthrizedApi):
         return 1
 
     def execute(self, request):
-        print("qqqqqqqqqqqqqqqqqqqqqq")
         diagnosis_type_count_list = OverviewManager.get_case_diagnosis_result()
         return diagnosis_type_count_list
 
@@ -103,9 +100,56 @@ class GetCaseStatisticsCount(NoAuthrizedApi):
         return 1
 
     def execute(self, request):
-        print("qqqqqqqqqqqqqqqqqqqqqq")
         diagnosis_type_count_list = OverviewManager.get_case_statistics_count()
         return diagnosis_type_count_list
+
+    def fill(self, response, data):
+        return data
+
+
+class GetCaseSubSpecialty(NoAuthrizedApi):
+    request = with_metaclass(RequestFieldSet)
+    response = with_metaclass(ResponseFieldSet)
+
+    @classmethod
+    def get_desc(cls):
+        return "获取亚专科分布"
+
+    @classmethod
+    def get_author(cls):
+        return "zs"
+
+    @classmethod
+    def get_protocol_num(cls):
+        return 1
+
+    def execute(self, request):
+        sub_specialty_count_list = OverviewManager.get_case_sub_specialty()
+        return sub_specialty_count_list
+
+    def fill(self, response, data):
+        return data
+
+
+class GetCaseSiteDynamics(NoAuthrizedApi):
+    request = with_metaclass(RequestFieldSet)
+    response = with_metaclass(ResponseFieldSet)
+
+    @classmethod
+    def get_desc(cls):
+        return "108家站点动态"
+
+    @classmethod
+    def get_author(cls):
+        return "zs"
+
+    @classmethod
+    def get_protocol_num(cls):
+        return 1
+
+    def execute(self, request):
+        sub_specialty_count_list = OverviewManager.get_case_site_dynamics()
+        return sub_specialty_count_list
 
     def fill(self, response, data):
         return data

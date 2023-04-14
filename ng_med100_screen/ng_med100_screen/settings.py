@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-q(@nyb==6+@*xtj(gtz@iw@b*c@1$o60h_dx=tz2*azt4-5txn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -62,7 +62,7 @@ API_TEMPLATE_DIR = os.path.join(TUOEN_DIR, "frame/template")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-         'DIRS': [API_TEMPLATE_DIR],
+        'DIRS': [API_TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

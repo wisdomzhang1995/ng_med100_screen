@@ -21,7 +21,6 @@ class ApiInterface(object):
         namespace = namespace if namespace[-1] != "api" else namespace[:-1]
         namespace.append(api_name)
         # todo shun: make the frame looks normally
-        print("QQQQQQQQQQQQQQQQQQQQQ", namespace)
         return '.'.join(namespace).replace('.', '/')
 
     @classmethod
@@ -112,6 +111,6 @@ class BaseApi(ApiHelper, ApiInterface):
         print("=========================GGGGGGGGGGGGGGGGGGGGGGGGG", request)
         self.authorized(request, params)
         result = self.enhance_execute()(request)
-        respond_data = self.pack(self.response, result)
-        return respond_data
+        # respond_data = self.pack(self.response, result)
+        return result
 

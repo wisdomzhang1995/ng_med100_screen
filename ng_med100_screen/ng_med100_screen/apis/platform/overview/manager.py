@@ -1,11 +1,16 @@
+import datetime
+
+from django.conf import settings
 from django.db.models import Sum, Count
 
+from apis.platform.overview.sql import *
+from frame.tools.database.sql_operator import MysqlManager
+from frame.tools.public_function import format_time
 from model.models import TCase, TCaseExpert, TSiteChargingItem
 
 
 class OverviewManager(object):
     CASE_MODEL = TCase
-    REALTIME_QUERYSET = CASE_MODEL.get_realtime_queryset()
     REGISTERED = 300
     ADMISSIONED = 600
     SIGNED = 800
@@ -24,6 +29,20 @@ class OverviewManager(object):
         14: "肿瘤(不确定)",
         15: "肿瘤(癌前病变)",
     }
+
+    @classmethod
+    def get_time_range(cls):
+        start_time = datetime.datetime.now()
+        print("QWWWWWWWWWWWWWWWWWWWWWW", start_time)
+        end_time = start_time - datetime.timedelta(days=2)
+        return start_time, end_time
+
+    @classmethod
+    def get_realtime_queryset(cls, model):
+        if settings.DEBUG:
+            return model.search()
+        start_time, end_time = cls.get_time_range()
+        return model.search(create_time__gte=start_time, create_time__lte=end_time)
 
     @classmethod
     def statistics_status_count(cls, status_count):
@@ -45,7 +64,7 @@ class OverviewManager(object):
 
     @classmethod
     def get_case_status_count(cls):
-        status_count = cls.CASE_MODEL.annotate_field_count(cls.REALTIME_QUERYSET, "status")
+        status_count = cls.CASE_MODEL.annotate_field_count(cls.get_realtime_queryset(cls.CASE_MODEL), "status")
         statistics_status_list = cls.statistics_status_count(status_count)
         return statistics_status_list
 
@@ -67,7 +86,8 @@ class OverviewManager(object):
     @classmethod
     def get_case_diagnosis_type_count(cls):
         annotate_field = "info_diagnosis_type"
-        diagnosis_type_list = cls.CASE_MODEL.annotate_field_count(cls.REALTIME_QUERYSET, annotate_field)
+        realtime_queryset = cls.get_realtime_queryset(cls.CASE_MODEL)
+        diagnosis_type_list = cls.CASE_MODEL.annotate_field_count(realtime_queryset, annotate_field)
         diagnosis_type_count_list = cls.format_statistic_count_data(annotate_field, diagnosis_type_list,
                                                                     cls.DIAGNOSIS_TYPE_MAP)
         return diagnosis_type_count_list
@@ -75,7 +95,8 @@ class OverviewManager(object):
     @classmethod
     def get_case_diagnosis_result(cls):
         annotate_field = "disease_type"
-        diagnosis_result_list = cls.CASE_MODEL.annotate_field_count(cls.REALTIME_QUERYSET, annotate_field)
+        realtime_queryset = cls.get_realtime_queryset(cls.CASE_MODEL)
+        diagnosis_result_list = cls.CASE_MODEL.annotate_field_count(realtime_queryset, annotate_field)
         diagnosis_result_count_list = cls.format_statistic_count_data(annotate_field, diagnosis_result_list,
                                                                       cls.DISEASE_TYPE_MAP)
         return diagnosis_result_count_list
@@ -92,8 +113,10 @@ class OverviewManager(object):
 
     @classmethod
     def get_total_charging(cls):
-        total_charging = TSiteChargingItem.search().aggregate(total_income=Sum("charging_item_price"))
-        total_charging_num = total_charging["total_income"] // 10000
+        db_conn = MysqlManager()
+        sql = cls.format_sql_of_debug(total_income_sql, cls.format_realtime())
+        result = db_conn.execute_fetchone(sql)
+        total_charging_num = round(result["total_income"] / 10000, 1)
         return total_charging_num
 
     @classmethod
@@ -103,3 +126,62 @@ class OverviewManager(object):
             "cast_count": cls.get_total_cast_count(),
             "total_income": cls.get_total_charging()
         }
+
+    @classmethod
+    def format_sql_of_debug(cls, sql, condition=""):
+        if settings.DEBUG:
+            format_sql = sql.format(condition="")
+        else:
+            format_sql = sql.format(condition=condition)
+        return format_sql
+
+    @classmethod
+    def format_sql_result(cls, result):
+        return list(result)
+
+    @classmethod
+    def format_realtime(cls):
+        start_time, end_time = cls.get_time_range()
+        return f" and create_time between {format_time(start_time)} and {format_time(end_time)}"
+
+    @classmethod
+    def get_case_sub_specialty(cls):
+        db_conn = MysqlManager()
+        sql = cls.format_sql_of_debug(sub_specialty_sql, cls.format_realtime())
+        result = db_conn.execute_fetchall(sql)
+        return cls.format_statistic_count_data("system_name", cls.format_sql_result(result))
+
+    @classmethod
+    def format_site_dynamics(cls, result1, result2, result3):
+        for r1 in result1:
+            for r2 in result2:
+                if r1["name"] == r2["name"]:
+                    r1.update(r2)
+                    for r3 in result3:
+                        if r1["name"] == r3["name"]:
+                            r1.update(r3)
+                    else:
+                        r1["numerator_count"] = 0
+            else:
+                r1["immunostaining_count"] = 0
+                for r3 in result3:
+                    if r1["name"] == r3["name"]:
+                        r1.update(r3)
+                else:
+                    r1["numerator_count"] = 0
+            r1["case_count"] = r1["tissue_count"] + r1["cell_count"] + r1["frost_count"] + r1["immunostaining_count"] + r1["numerator_count"]
+
+        return result1
+
+    @classmethod
+    def get_case_site_dynamics(cls):
+        db_conn = MysqlManager()
+        cast_sql = cls.format_sql_of_debug(site_dynamics_cast_sql, cls.format_realtime())
+        advice_sql = cls.format_sql_of_debug(site_dynamics_advice_sql, cls.format_realtime())
+        molecular_sql = cls.format_sql_of_debug(site_dynamics_molecular_sql, cls.format_realtime())
+        cast_result = db_conn.execute_fetchall(cast_sql)
+        advice_result = db_conn.execute_fetchall(advice_sql)
+        molecular_result = db_conn.execute_fetchall(molecular_sql)
+        result = cls.format_site_dynamics(cast_result, advice_result, molecular_result)
+        print("108 bingli----------------", len(result))
+        return result

@@ -26,6 +26,10 @@ class PlatformService(BaseApiService):
 
 platform_service = PlatformService()
 
-from ng_med100_screen.apis.platform.overview.api import GetCaseStatusCount, GetCaseDiagnosisTypeCount, GetCaseDiagnosisResult, GetCaseStatisticsCount
-platform_service.add(GetCaseStatusCount, GetCaseDiagnosisTypeCount, GetCaseDiagnosisResult, GetCaseStatisticsCount)
-print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG==========================", platform_service._api_mapping)
+from ng_med100_screen.apis.platform.overview.api import GetCaseStatusCount, GetCaseDiagnosisTypeCount, \
+    GetCaseDiagnosisResult, GetCaseStatisticsCount, GetCaseSubSpecialty, GetCaseSiteDynamics
+platform_service.add(GetCaseStatusCount, GetCaseDiagnosisTypeCount, GetCaseDiagnosisResult, GetCaseStatisticsCount,
+                     GetCaseSubSpecialty, GetCaseSiteDynamics)
+print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG==========================")
+for k, v in platform_service._api_mapping.items():
+    print(f"{k}: {v}")

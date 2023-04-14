@@ -40,10 +40,6 @@ class GetDisplayCA(NoAuthrizedApi):
     def get_protocol_num(cls):
         return 900001
 
-    @classmethod
-    def log_required(cls):
-        return False
-
     def execute(self, request):
         limit = TMoneySiteCycle.objects.filter().all()
         limit_data = [l.as_dict() for l in limit[:2]]
