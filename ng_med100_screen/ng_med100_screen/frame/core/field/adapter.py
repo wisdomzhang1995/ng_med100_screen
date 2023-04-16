@@ -64,7 +64,7 @@ class AdapterFieldSet(object):
         for name in dir(cls):
             value = getattr(cls, name)
             if name[:2] != '__':
-                print(f"{name}:", value)
+                print(f"{name}:", value, cls._field_cls)
             if isinstance(value, cls._field_cls):
                 cls._fields[name] = value
         print("==========================", cls._fields)

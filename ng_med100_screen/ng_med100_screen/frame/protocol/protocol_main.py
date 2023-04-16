@@ -1,6 +1,6 @@
 import json
 
-from frame.core.protocol.responser import Responser, ResponseField
+from frame.core.protocol.responser import Responser, ResponserField
 from ng_med100_screen.frame.core.field.base import CharField, IntField
 from ng_med100_screen.frame.core.protocol.base_protocol import BaseProtocol
 from frame.core.protocol.parser import Parser, ParseField
@@ -11,9 +11,9 @@ class DjangoProtocol(BaseProtocol):
     parser = Parser()
     parser.flag = ParseField(CharField, desc="服务标识")
     responser = Responser()
-    responser.resultCode = ResponseField(IntField, desc="状态码")
-    responser.resultMsg = ResponseField(CharField, desc="错误消息")
-    responser.data = ResponseField(CharField, desc="空字符")
+    responser.resultCode = ResponserField(IntField, desc="状态码")
+    responser.resultMsg = ResponserField(CharField, desc="错误消息")
+    responser.data = ResponserField(CharField, desc="空字符")
 
     _upload_files = "_upload_files"
     _remote_ip = "_remote_ip"

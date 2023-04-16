@@ -3,11 +3,11 @@
 from frame.core.field.adapter import AdapterField
 
 
-class ResponseField(AdapterField):
+class ResponserField(AdapterField):
 
     def __init__(self, field_cls, is_success=True, is_error=True, *args,
                  **kwargs):
-        super(ResponseField, self).__init__(field_cls, *args, **kwargs)
+        super(ResponserField, self).__init__(field_cls, *args, **kwargs)
         self._is_success = is_success
         self._is_error = is_error
 
@@ -28,7 +28,7 @@ class Responser(object):
         if not hasattr(self, "_success_fields"):
             self._success_fields = {}
             for name, value in self.__dict__.items():
-                if isinstance(value, ResponseField) and value.is_success():
+                if isinstance(value, ResponserField) and value.is_success():
                     self._success_fields[name] = value
         # self._success_fields.update({'m': ''})
         return self._success_fields
@@ -37,7 +37,7 @@ class Responser(object):
         if not hasattr(self, "_fail_fields"):
             self._fail_fields = {}
             for name, value in self.__dict__.items():
-                if isinstance(value, ResponseField) and value.is_error():
+                if isinstance(value, ResponserField) and value.is_error():
                     self._fail_fields[name] = value
         return self._fail_fields
 

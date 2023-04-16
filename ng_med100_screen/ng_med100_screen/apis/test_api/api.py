@@ -1,8 +1,7 @@
-from frame.core.protocol.responser import ResponseField
 from ng_med100_screen.frame.common.with_metaclass import with_metaclass
 from ng_med100_screen.frame.core.api.authorization import NoAuthrizedApi
 from frame.core.api.request_parse import RequestFieldSet, RequestField
-from frame.core.api.response_parse import ResponseFieldSet
+from frame.core.api.response_parse import ResponseFieldSet, ResponseField
 from ng_med100_screen.frame.core.field.base import DictField, IntField, CharField, DatetimeField, ListField
 from model.models import TMoneySiteCycle
 
