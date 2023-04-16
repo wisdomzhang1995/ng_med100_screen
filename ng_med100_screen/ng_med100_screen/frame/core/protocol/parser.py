@@ -15,7 +15,6 @@ class Parser(object):
     def get_fields(self):
         if not hasattr(self, '_fields'):
             self._fields = {}
-            print("HHHHHHHHHHHHHHHHHHHHH", self.__dict__.items())
             for name, value in self.__dict__.items():
                 if isinstance(value, ParseField):
                     self._fields[name] = value

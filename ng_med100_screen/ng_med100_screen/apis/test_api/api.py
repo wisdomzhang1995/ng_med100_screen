@@ -1,36 +1,28 @@
+from frame.core.protocol.responser import ResponseField
 from ng_med100_screen.frame.common.with_metaclass import with_metaclass
 from ng_med100_screen.frame.core.api.authorization import NoAuthrizedApi
-from ng_med100_screen.frame.core.api.request_parse import RequestFieldSet, RequestField
-from ng_med100_screen.frame.core.api.response_parse import ResponseFieldSet
-from ng_med100_screen.frame.core.field.base import DictField, IntField, CharField, DatetimeField
+from frame.core.api.request_parse import RequestFieldSet, RequestField
+from frame.core.api.response_parse import ResponseFieldSet
+from ng_med100_screen.frame.core.field.base import DictField, IntField, CharField, DatetimeField, ListField
 from model.models import TMoneySiteCycle
 
 
-class GetDisplayCA(NoAuthrizedApi):
+class LogProtocol(NoAuthrizedApi):
+    """日志协议列表"""
+
     request = with_metaclass(RequestFieldSet)
+    request.log_type = RequestField(
+        CharField,
+        desc="日志类型 NAT: nat, POLICY, SESSION: 会话, DOS: 安全, LEARN, VUL: 漏洞日志, ACL: acl日志, FLOW_CTRL: 流控日志, "
+             "IP_MAC: ip_mac日志, INDUS_TPL: 工业模板",
+    )
     response = with_metaclass(ResponseFieldSet)
 
-    request.page_info = RequestField(DictField, desc="分页条件", conf={
-        "page_num": IntField(desc="页码", is_required=False),
-        "page_size": IntField(desc="每页条数", is_required=False)
-    })
-
-    # response.total_page = ResponseField(IntField, desc='总页数')
-    # response.total = ResponseField(IntField, desc='总条数')
-    # response.data = ResponseField(ListField, desc='可信证书管理', fmt=DictField(desc="可信证书管理", conf={
-    #     "id": IntField(desc="id"),
-    #     "upload_name": CharField(desc="上传文件名"),
-    #     "save_name": CharField(desc="存储文件名称"),
-    #     "content_type": CharField(desc="文件类型"),
-    #     "suffix": CharField(desc="文件后缀"),
-    #     "size": CharField(desc="文件大小"),
-    #     "upload_time": DatetimeField(desc="上传时间"),
-    #     "display_type": CharField(desc="证书类型"),
-    # }))
+    response.data = ResponseField(ListField, desc="日志信息", fmt=CharField(desc=""))
 
     @classmethod
     def get_desc(cls):
-        return "获取可信证书管理"
+        return "日志协议列表"
 
     @classmethod
     def get_author(cls):
@@ -38,13 +30,38 @@ class GetDisplayCA(NoAuthrizedApi):
 
     @classmethod
     def get_protocol_num(cls):
-        return 900001
+        return "12354"
+
+    @classmethod
+    def log_required(cls):
+        return False
 
     def execute(self, request):
-        limit = TMoneySiteCycle.objects.filter().all()
-        limit_data = [l.as_dict() for l in limit[:2]]
-        print("qqqqqqqqqqqqqqqqqqqqqq", limit_data)
-        return limit_data
+        protocol_list = [
+            "hopopts",
+            "icmp",
+            "igmp",
+            "ggp",
+        ]
+        learn_list = ["bacnet-ip", "dnp3", "ethernet-ip", "fins", "iec104", "mms", "modbus", "opc", "opcua", "profinet",
+                      "s7", "dns", "ftp", "http", "pop3", "smtp", "mqtt"]
+        data = {
+            "NAT": protocol_list,
+            # "POLICY": protocol_list,
+            "SESSION": protocol_list,
+            "DOS": protocol_list,
+            "LEARN": learn_list,
+            "LIMIT": protocol_list,
+            "VUL": protocol_list,
+            "ACL": protocol_list,
+            "FLOW_CTRL": protocol_list,
+            "INDUSTRY_POLICY": learn_list,
+            "IP_MAC": protocol_list,
+            "INDUS_TPL": protocol_list,
+        }
+        return data.get(request.log_type) if data.get(request.log_type) else []
+        # return "ggp"
 
     def fill(self, response, data):
-        return data
+        response.data = data
+        return response

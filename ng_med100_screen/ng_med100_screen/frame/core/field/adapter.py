@@ -29,7 +29,7 @@ class AdapterFieldSet(object):
         self._fields = self.get_fields()
 
     def __setattr__(self, name, value):
-        _fields = super(AdapterField, self).__getattribute__("_fields")
+        _fields = super(AdapterFieldSet, self).__getattribute__("_fields")
         if name in _fields:
             value = _fields[name].execute(value)
         super(AdapterFieldSet, self).__setattr__(name, value)
@@ -48,11 +48,23 @@ class AdapterFieldSet(object):
 
         return super(AdapterFieldSet, self).__getattribute__(name)
 
+    # @classmethod
+    # def get_cls_var(cls):
+    #     cls_var = []
+    #     for name in dir(cls):
+    #         if name[:2] != '__':
+    #             cls_var.append(name)
+    #     print("cls_var---------------------------", cls_var)
+    #     return cls_var
+
     @classmethod
     def get_fields(cls):
         cls._fields = {}
+        print("dir(cls)===============================", dir(cls))
         for name in dir(cls):
             value = getattr(cls, name)
+            if name[:2] != '__':
+                print(f"{name}:", value)
             if isinstance(value, cls._field_cls):
                 cls._fields[name] = value
         print("==========================", cls._fields)

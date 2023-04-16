@@ -14,19 +14,28 @@ from ng_med100_screen.frame.thread_contex import RequestContext, _request
 protocol = DjangoProtocol()
 protocol.add(user_service)
 protocol.add(platform_service)
-print(f"ffffffffffffffffff", protocol._service_map)
+print(f"protocol service_map=============================", protocol._service_map)
 
 
 def router(request):
     with RequestContext():
         _request.request = request
         result = protocol.protocol_run(request)
-        data = {
-            "data": result,
-            "resultCode": 0,
-            "resultMsg": ""
-        }
-        resp = HttpResponse(json.dumps(data, cls=JSONEncoder))
+        # data = result["data"]
+        # data = {
+        #     "data": result,
+        #     "resultCode": 0,
+        #     "resultMsg": ""
+        # }
+        resp = HttpResponse(json.dumps(result, cls=JSONEncoder))
+        resp['Content-Type'] = 'application/json'
+        resp['Access-Control-Allow-Origin'] = '*'  # 处理跨域请求
+        resp['Access-Control-Max-Age'] = 86400
+        resp['Access-Control-Allow-Methods'] = '*'
+        resp['Access-Control-Allow-Headers'] = '*'
+        resp['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, ' \
+                                               'Fetch-Mode, accept'
+
         return resp
 
 

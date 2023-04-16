@@ -1,5 +1,7 @@
 import traceback
 
+from frame.core.exception.api_error import ApiError
+from frame.core.exception.pro_error import pro_errors, ProtocolCodes, ProtocolError
 from ng_med100_screen.frame.common.dict_wrapper import DictWrapper
 from ng_med100_screen.frame.common.singleton import Singleton
 
@@ -28,6 +30,7 @@ class ServiceManager(object):
 
 class BaseProtocol(Singleton, ServiceManager):
     parser = None
+    responser = None
 
     def extract_params(self, request):
         raise NotImplementedError('Please implement this interface in subclass')
@@ -42,8 +45,10 @@ class BaseProtocol(Singleton, ServiceManager):
                 try:
                     pro_params[field_name] = field_parser.execute(value)
                 except Exception as e:
-                    print(f"fS {Exception}")
-
+                    raise pro_errors(ProtocolCodes.PROTOCOL_FORMAT_ERROR, field_name,
+                                     field_parser.get_field().__class__.__name__)
+            else:
+                raise pro_errors(ProtocolCodes.PROTOCOL_LOST_PARAM, field_name)
         print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", fields)
         return DictWrapper(pro_params), DictWrapper(request_params)
 
@@ -53,19 +58,39 @@ class BaseProtocol(Singleton, ServiceManager):
     def get_api_flag(self, pro_parms):
         raise NotImplementedError('Please implement this interface in subclass')
 
+    def get_fail_parms(self, e):
+        raise NotImplementedError('Please implement this interface in subclass')
+
+    def get_success_parms(self, result):
+        raise NotImplementedError('Please implement this interface in subclass')
+
+    def failed(self, e):
+        parms = self.get_fail_parms(e)
+        return self.responser.failed(parms)
+
+    def succeed(self, result):
+        parms = self.get_success_parms(result)
+        return self.responser.succeed(parms, result)
+
     def protocol_run(self, request):
         try:
             file_data, request_params = self.extract_params(request)
             pro_params, api_params = self.parse_request_data(request_params)
-            print("GGGGGGGGGGGGGGGGGGGGGGGGGGGG", pro_params)
+            print("pro params GGGGGGGGGGGGGGGGGGGGGGGGGGGG", pro_params)
             service_str = self.get_service_flag(pro_params)
             api_str = api_params.api
             api_params.update(flag=service_str)
             api_params.update(file_data)
             service = self.get_service(service_str)
             result = service.service_run(api_str, api_params)
-            return result
-
+            response = self.succeed(result)
+            return response
+        except ApiError as e:
+            print(f"dong ------------>ApiError: {e}")
+            return self.failed(e)
+        except ProtocolError as e:
+            print(f"shun ------------>ProtocolError: {e}")
+            return self.failed(e)
         except Exception as e:
             print(traceback.print_exc())
             print(f"shun ------------------------------> {e}")

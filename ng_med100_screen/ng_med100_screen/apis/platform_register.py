@@ -30,6 +30,6 @@ from ng_med100_screen.apis.platform.overview.api import GetCaseStatusCount, GetC
     GetCaseDiagnosisResult, GetCaseStatisticsCount, GetCaseSubSpecialty, GetCaseSiteDynamics
 platform_service.add(GetCaseStatusCount, GetCaseDiagnosisTypeCount, GetCaseDiagnosisResult, GetCaseStatisticsCount,
                      GetCaseSubSpecialty, GetCaseSiteDynamics)
-print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG==========================")
+print("===================================================")
 for k, v in platform_service._api_mapping.items():
     print(f"{k}: {v}")

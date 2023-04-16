@@ -11,8 +11,9 @@ class DjangoProtocol(BaseProtocol):
     parser = Parser()
     parser.flag = ParseField(CharField, desc="服务标识")
     responser = Responser()
-    responser.status = ResponseField(IntField, desc="状态码")
-    responser.msg = ResponseField(CharField, desc="错误消息")
+    responser.resultCode = ResponseField(IntField, desc="状态码")
+    responser.resultMsg = ResponseField(CharField, desc="错误消息")
+    responser.data = ResponseField(CharField, desc="空字符")
 
     _upload_files = "_upload_files"
     _remote_ip = "_remote_ip"
@@ -24,17 +25,17 @@ class DjangoProtocol(BaseProtocol):
     def get_api_flag(self, pro_params):
         return pro_params.api
 
-    def get_success_params(self, result):
-        return {'status': 0, 'msg': '', 'data': result}
-
-    def get_fail_params(self, e):
-        return {'status': -e.get_code(), 'msg': e.get_msg(), 'data': ''}
-
     def get_api_str(self, path_info):
         return path_info.replace('/api/', '').rstrip("/")
 
     def set_protocol(self):
         pass
+
+    def get_success_parms(self, result):
+        return {'resultCode': 0, 'resultMsg': '', 'data': result}
+
+    def get_fail_parms(self, e):
+        return {'resultCode': -e.get_code(), 'resultMsg': e.get_msg(), 'data': ''}
 
     def extract_params(self, request):
         # for k, v in request.POST.items():

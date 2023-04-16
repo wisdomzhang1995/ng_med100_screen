@@ -4,7 +4,9 @@ import pathlib
 
 import pysnooper
 
-from frame.core.api.response_parse import ResponseField
+from frame.core.api.request_parse import RequestFieldSet
+from frame.core.api.response_parse import ResponseField, ResponseFieldSet
+from frame.core.exception.api_error import api_errors, ApiCodes
 from ng_med100_screen.apis import api_abs_path
 from ng_med100_screen.frame.tools.redis.redis_operator import redis_sys
 
@@ -51,17 +53,18 @@ class ApiHelper(object):
 class BaseApi(ApiHelper, ApiInterface):
     request = None
     response = None
-    # def __init__(self):
-    #     assert self.request is not None
-    #     assert issubclass(self.request, RequestFieldSet)
-    #
-    #     assert self.response is not None
-    #     assert issubclass(self.response, ResponseFieldSet)
-    #
-    #     self.request = type('tmp' + self.request.__name__, (self.request,),
-    #                         {})()
-    #     self.response = type('tmp' + self.response.__name__, (self.response,),
-    #                          {})()
+
+    def __init__(self):
+        assert self.request is not None
+        assert issubclass(self.request, RequestFieldSet)
+
+        assert self.response is not None
+        assert issubclass(self.response, ResponseFieldSet)
+
+        self.request = type('tmp' + self.request.__name__, (self.request,),
+                            {})()
+        self.response = type('tmp' + self.response.__name__, (self.response,),
+                             {})()
 
     def authorized(self, request, params):
         raise NotImplementedError('Please implement this interface in subclass')
@@ -77,14 +80,15 @@ class BaseApi(ApiHelper, ApiInterface):
             if key not in params:
                 if helper.is_need() or (
                         helper.is_need() and helper.get_field().is_required()):
-                    pass
+                    raise api_errors(ApiCodes.INTERFACE_PARATERS_LOST, key)
             else:
                 try:
                     if helper.get_field().parse_it():
                         setattr(request, key, params[key])
                 except Exception as e:
-                    pass
-        return params
+                    raise api_errors(ApiCodes.INTERFACE_PARATERS_PARSE_WRONG,
+                                     key, e)
+        return request
 
     def enhance_execute(self):
         if redis_sys.get("awesome", invert=int) == 310:
@@ -98,6 +102,7 @@ class BaseApi(ApiHelper, ApiInterface):
         if args:
             response = self.fill(response, *args)
         pack_data = {}
+        print("response.get_fields()===============================", response.get_fields())
         for key in response.get_fields():
             value = getattr(response, key)
             if isinstance(value, ResponseField):
@@ -111,6 +116,6 @@ class BaseApi(ApiHelper, ApiInterface):
         print("=========================GGGGGGGGGGGGGGGGGGGGGGGGG", request)
         self.authorized(request, params)
         result = self.enhance_execute()(request)
-        # respond_data = self.pack(self.response, result)
-        return result
+        respond_data = self.pack(self.response, result)
+        return respond_data
 

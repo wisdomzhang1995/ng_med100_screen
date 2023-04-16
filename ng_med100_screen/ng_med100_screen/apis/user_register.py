@@ -1,4 +1,4 @@
-from ng_med100_screen.apis.test_api.api import GetDisplayCA
+
 from ng_med100_screen.frame.core.service.base_service import BaseApiService
 
 
@@ -26,5 +26,6 @@ class UserService(BaseApiService):
 
 
 user_service = UserService()
-user_service.add(GetDisplayCA)
-print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG==========================", user_service._api_mapping)
+from ng_med100_screen.apis.test_api.api import LogProtocol
+user_service.add(LogProtocol)
+print("user_service API MAP==========================", user_service._api_mapping)
