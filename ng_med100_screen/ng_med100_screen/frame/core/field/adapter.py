@@ -48,15 +48,6 @@ class AdapterFieldSet(object):
 
         return super(AdapterFieldSet, self).__getattribute__(name)
 
-    # @classmethod
-    # def get_cls_var(cls):
-    #     cls_var = []
-    #     for name in dir(cls):
-    #         if name[:2] != '__':
-    #             cls_var.append(name)
-    #     print("cls_var---------------------------", cls_var)
-    #     return cls_var
-
     @classmethod
     def get_fields(cls):
         cls._fields = {}
@@ -68,5 +59,5 @@ class AdapterFieldSet(object):
                 # print(f"{name}:", value, cls._field_cls)
             if isinstance(value, cls._field_cls):
                 cls._fields[name] = value
-        print("==========================", cls._fields)
+        # print("==========================", cls._fields)
         return cls._fields

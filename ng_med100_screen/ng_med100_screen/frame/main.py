@@ -9,13 +9,13 @@ from frame.core.exception.api_error import api_errors
 from frame.core.exception.business_error import BusinessError
 from ng_med100_screen.apis.platform_register import platform_service
 from frame.common.json_encoder import JSONEncoder
-from ng_med100_screen.apis.user_register import user_service
+# from ng_med100_screen.apis.user_register import user_service
 from ng_med100_screen.frame.protocol.protocol_main import DjangoProtocol
 from ng_med100_screen.frame.thread_contex import RequestContext, _request
 from frame.core.exception.pro_error import pro_errors, ProtocolCodes, ProtocolError
 
 protocol = DjangoProtocol()
-protocol.add(user_service)
+# protocol.add(user_service)
 protocol.add(platform_service)
 print(f"protocol service_map=============================", protocol._service_map)
 

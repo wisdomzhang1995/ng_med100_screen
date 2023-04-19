@@ -232,6 +232,10 @@ class GetSpecimenCirculation(NoAuthrizedApi):
 class GetCastBusinessType(NoAuthrizedApi):
     request = with_metaclass(RequestFieldSet)
     response = with_metaclass(ResponseFieldSet)
+    response.data_list = ResponseField(ListField, desc="病例业务类型分布", fmt=DictField(desc="",conf={
+            "name": CharField(desc="名称"),
+            "count": IntField(desc="数量"),
+    }))
 
     @classmethod
     def get_desc(cls):
@@ -250,7 +254,8 @@ class GetCastBusinessType(NoAuthrizedApi):
         return sub_specialty_count_list
 
     def fill(self, response, data):
-        return data
+        response.data_list = data
+        return response
 
 
 class GetCellCount(NoAuthrizedApi):

@@ -1,3 +1,5 @@
+project_name = "ng_med100_screen"
+
 platform_flag_name = "platform"
 test_api_flag_name = "test_api"
 platform_flag_cn_name = "诊断平台大屏"
@@ -13,6 +15,7 @@ service_sub_dir_cn_name = {
     # 平台大屏目录下子目录名称
     platform_flag_name: {
         "overview": "云诊断实时数据",
+        "diagnosis_cast": "近六个月病例诊断数据",
     },
     test_api_flag_name: {},
 }
