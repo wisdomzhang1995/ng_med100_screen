@@ -200,7 +200,7 @@ class GetCaseSiteDynamics(NoAuthrizedApi):
         return response
 
 
-class getSpecimenCirculation(NoAuthrizedApi):
+class GetSpecimenCirculation(NoAuthrizedApi):
     request = with_metaclass(RequestFieldSet)
     response = with_metaclass(ResponseFieldSet)
     response.data_list = ResponseField(ListField, desc="标本流转分布", fmt=DictField(desc="",conf={
@@ -246,7 +246,7 @@ class GetCastBusinessType(NoAuthrizedApi):
         return 1
 
     def execute(self, request):
-        sub_specialty_count_list = OverviewManager.get_specimen_circulation()
+        sub_specialty_count_list = OverviewManager.get_cast_business_type()
         return sub_specialty_count_list
 
     def fill(self, response, data):

@@ -1,10 +1,12 @@
 from ng_med100_screen.frame.common.singleton import Singleton
 
 
+
 class BaseApiService(Singleton):
 
     _api_mapping = None
     _protocol_set = None
+
 
     @classmethod
     def get_name(cls):

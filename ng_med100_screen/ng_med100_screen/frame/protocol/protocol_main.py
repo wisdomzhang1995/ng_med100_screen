@@ -45,7 +45,7 @@ class DjangoProtocol(BaseProtocol):
         meta = request.META
         api_str = self.get_api_str(meta.get("PATH_INFO"))
         jwt_token = meta.get("HTTP_AUTHORIZATION")
-        print("==============================", request.body, request.POST)
+        print("==============================",api_str, request.body, request.POST)
         try:
             request_params = {key: value for key, value in json.loads(request.body.decode("utf-8")).items()}
         except Exception as e:

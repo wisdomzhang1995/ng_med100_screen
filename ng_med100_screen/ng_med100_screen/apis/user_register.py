@@ -1,4 +1,4 @@
-
+from frame.global_config import test_api_flag_name, test_api_flag_cn_name
 from ng_med100_screen.frame.core.service.base_service import BaseApiService
 
 
@@ -6,7 +6,7 @@ class UserService(BaseApiService):
 
     @classmethod
     def get_name(cls):
-        return "用户服务"
+        return test_api_flag_cn_name
 
     @classmethod
     def get_desc(cls):
@@ -14,7 +14,7 @@ class UserService(BaseApiService):
 
     @classmethod
     def get_flag(cls):
-        return "user"
+        return test_api_flag_name
 
     @classmethod
     def get_accept(cls):

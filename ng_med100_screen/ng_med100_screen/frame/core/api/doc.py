@@ -10,7 +10,13 @@
 import inspect
 from collections import defaultdict
 
-from frame.core.field.base import ListField, DictField
+from frame.core.field.base import ListField, DictField, CharField
+
+import os
+
+from frame.core.protocol.parser import ParseField
+from frame.global_config import service_sub_dir_cn_name, openapi_dirname_trans
+from settings import TUOEN_DIR
 
 dict_factory = lambda: defaultdict(dict_factory)
 
@@ -207,9 +213,12 @@ class SwaggerDoc():
         self.version = self.VERSION
         self.info = self.HEAD_INFO
         self.schemes = self.SCHEMES
-        self.tags = []
+        self.tags = self.generate_tags()
         self.required = []
         self.paths = dict_factory()
+        self.protocol_field = {
+            "flag": ParseField(CharField, desc="服务标识,根据url开头第一个级目录名，例如platform")
+        }
 
     def convert_filed_type(self, field):
         """
@@ -222,6 +231,32 @@ class SwaggerDoc():
             'list': 'array',
             'dict': 'object',
         }.get(field.get_type(), 'string')
+
+    def format_cn_dir_name(self, tag, is_api_name=True):
+        api_dir_list = tag.split("/")
+        service_name = api_dir_list[0]
+        if not is_api_name:
+            sub_path_list = api_dir_list[1:]
+        else:
+            sub_path_list = api_dir_list[1:-1]
+        cn_path_name_list = list(map(lambda x: service_sub_dir_cn_name[service_name][x], sub_path_list))
+        cn_path_name_list.insert(0, openapi_dirname_trans[service_name])
+        return "/".join(cn_path_name_list)
+
+    def generate_tags(self):
+        tags = []
+        for parent, dirnames, filenames in os.walk(os.sep.join([TUOEN_DIR, "apis"])):
+            for dirname in dirnames:
+                p = os.path.join(parent, dirname)
+                if "__" in p:
+                    continue
+
+                tag = p.split("apis\\")[-1].replace("\\", "/")
+                tags.append({
+                    "name": self.format_cn_dir_name(tag, is_api_name=False),
+                    "description": tag
+                })
+        return tags
 
     def add_tags(self, tag):
         """
@@ -276,12 +311,18 @@ class SwaggerDoc():
         """
         properties = dict_factory()
         required = []
+        # add service is_required field
+        for field_name, field in self.protocol_field.items():
+            org_field = field.get_field()
+            self.generate_field(properties[field_name], org_field)
+            required.append(field_name)
         for field_name, field in api.get_request_fields().items():
             org_field = field.get_field()
             self.generate_field(properties[field_name], org_field)
 
             if org_field.is_required():
                 required.append(field_name)
+
         return properties, required
 
     def generate_response_properties(self, api):
@@ -304,8 +345,9 @@ class SwaggerDoc():
         填充 paths 里面的基础信息
         """
         post_base['summary'] = api.get_desc()
+        post_base['x-apifox-folder'] = self.format_cn_dir_name(api.get_name())
         post_base['description'] = ''
-        post_base['tags'] = [api.get_name().split('/')[0]]
+        post_base['tags'] = [self.format_cn_dir_name(api.get_name())]
         post_base['consumes'] = ["application/json"]
 
     def fill_paths_post_parameter(self, post_base, api):
@@ -337,8 +379,9 @@ class SwaggerDoc():
         """
         生成文件对应的 paths 信息
         """
-        url = '/' + api.get_name()
-        self.add_tags(api.get_name().split('/')[0])
+        # url = '/api/' + api.get_name()
+        url = api.get_name()
+        # self.add_tags("/".join(api.get_name().split('/')[:-1]))
         self.paths[url]['post'] = dict_factory()
         self.fill_paths_post_base(self.paths[url]['post'], api)
         self.fill_paths_post_parameter(self.paths[url]['post'], api)

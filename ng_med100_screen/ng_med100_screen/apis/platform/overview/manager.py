@@ -225,3 +225,7 @@ class OverviewManager(object):
         diagnosis_result_count_list = cls.format_statistic_count_data(annotate_field, diagnosis_result_list,
                                                                       cls.CELL_SAMPLE_TYPE_MAP)
         return diagnosis_result_count_list
+
+    @classmethod
+    def get_cast_business_type(cls):
+        pass

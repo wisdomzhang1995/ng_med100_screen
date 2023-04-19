@@ -3,7 +3,7 @@ import os
 
 from django.core.management.base import BaseCommand
 from frame.core.api.doc import SwaggerDoc
-from settings import STATIC_FILES_ROOT
+from settings import STATIC_FILES_ROOT,  TUOEN_DIR
 
 
 class Command(BaseCommand):
@@ -26,6 +26,7 @@ class Command(BaseCommand):
             services = protocol.get_services()
         swagger_doc = SwaggerDoc()
         for service in services:
+            print("service --------------------", len(service.get_apis()), service)
             for api in service.get_apis():
                 swagger_doc.generate_paths(api)
 
