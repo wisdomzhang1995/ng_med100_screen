@@ -197,9 +197,9 @@ class SwaggerDoc():
     SCHEMES = ['https']
     BASEPATH = "/frame"
     HEAD_INFO = {
-        "title": "ifw",
+        "title": "ng_med100_screen",
         "version": "last",
-        "description": "防火墙项目"
+        "description": "云诊断平台大屏"
     }
 
     def __init__(self, *args, **kwargs):

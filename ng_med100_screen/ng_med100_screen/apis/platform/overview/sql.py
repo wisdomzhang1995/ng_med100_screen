@@ -44,3 +44,24 @@ SELECT b.site_name as name,
     where a.is_delete=0 {condition}
     GROUP BY a.site_id order by a.site_id
 """
+
+sql1 = """
+select count(*) as count from t_case where is_delete=0 {condition}
+"""
+
+sql2 = """
+select count(*) as count from  t_case_sample a left join t_case b on a.case_id=b.case_id where b.is_delete=0 and b.case_type=1 {condition}
+"""
+
+sql3 = """
+select count(*) as count from  t_case_sample a left join t_case b on a.case_id=b.case_id where b.is_delete=0 and b.case_type=1 {condition}
+"""
+
+sql4 = """
+select count(*) as count from  t_case_slide a left join t_case b on a.case_id=b.case_id where b.is_delete=0 and b.case_type=1 {condition}
+"""
+
+sql5 = """
+select count(*) as count from t_case_advice where 1=1 {condition}
+"""
+

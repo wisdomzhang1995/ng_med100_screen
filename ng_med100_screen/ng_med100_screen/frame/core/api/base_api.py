@@ -75,6 +75,22 @@ class BaseApi(ApiHelper, ApiInterface):
     def fill(self, response, *args):
         raise NotImplementedError('Please implement this interface in subclass')
 
+    @classmethod
+    def get_request_fields(cls):
+        """get request fields"""
+        if cls.request is None:
+            print("request is empty!!!")
+            return {}
+        return cls.request.get_fields()
+
+    @classmethod
+    def get_response_fields(cls):
+        """get request fields"""
+        if cls.request is None:
+            print("request is empty!!!")
+            return {}
+        return cls.response.get_fields()
+
     def parse(self, request, params):
         for key, helper in request.get_fields().items():
             if key not in params:
@@ -115,7 +131,7 @@ class BaseApi(ApiHelper, ApiInterface):
         request = self.parse(self.request, params)
         print("=========================GGGGGGGGGGGGGGGGGGGGGGGGG", request)
         self.authorized(request, params)
-        result = self.enhance_execute()(request)
-        respond_data = self.pack(self.response, result)
+        respond_data = self.enhance_execute()(request)
+        respond_data = self.pack(self.response, respond_data)
         return respond_data
 

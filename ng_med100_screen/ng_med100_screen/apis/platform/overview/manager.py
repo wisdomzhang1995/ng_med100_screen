@@ -30,6 +30,13 @@ class OverviewManager(object):
         15: "肿瘤(癌前病变)",
     }
 
+    CELL_SAMPLE_TYPE_MAP = {
+            20: "宫颈细胞",
+            21: "脱落细胞",
+            22: "细针穿刺",
+            23: "其他类型",
+     }
+
     @classmethod
     def get_time_range(cls):
         start_time = datetime.datetime.now()
@@ -175,6 +182,7 @@ class OverviewManager(object):
 
     @classmethod
     def get_case_site_dynamics(cls):
+        # 三个表分开写，程序合并到一块
         db_conn = MysqlManager()
         cast_sql = cls.format_sql_of_debug(site_dynamics_cast_sql, cls.format_realtime())
         advice_sql = cls.format_sql_of_debug(site_dynamics_advice_sql, cls.format_realtime())
@@ -185,3 +193,35 @@ class OverviewManager(object):
         result = cls.format_site_dynamics(cast_result, advice_result, molecular_result)
         print("108 bingli----------------", len(result))
         return result
+
+    @classmethod
+    def get_specimen_circulation(cls):
+        db_conn = MysqlManager()
+        applicate_sql = cls.format_sql_of_debug(sql1, cls.format_realtime())
+        single_sample_sql = cls.format_sql_of_debug(sql2, cls.format_realtime())
+        frozen_sample_sql = cls.format_sql_of_debug(sql3, cls.format_realtime())
+        case_slide_sql = cls.format_sql_of_debug(sql4, cls.format_realtime())
+        case_advice_sql = cls.format_sql_of_debug(sql5, cls.format_realtime())
+        applicate_result = db_conn.execute_fetchone(applicate_sql)
+        single_sample_result = db_conn.execute_fetchone(single_sample_sql)
+        frozen_sample_result = db_conn.execute_fetchone(frozen_sample_sql)
+        case_slide_result = db_conn.execute_fetchone(case_slide_sql)
+        case_advice_result = db_conn.execute_fetchone(case_advice_sql)
+        name_list = ["申请单", "常规取材", "冰冻取材", "常规玻片", "技术医嘱"]
+        return [
+            {"name": "申请单", "count": applicate_result["count"]},
+            {"name": "常规取材", "count": single_sample_result["count"]},
+            {"name": "冰冻取材", "count": frozen_sample_result["count"]},
+            {"name": "常规玻片", "count": case_slide_result["count"]},
+            {"name": "技术医嘱", "count": case_advice_result["count"]},
+                ]
+
+    @classmethod
+    def get_cell_count(cls):
+        annotate_field = "sample_type"
+        realtime_queryset = cls.get_realtime_queryset(cls.CASE_MODEL)
+        queryset = realtime_queryset.filter(case_type=2, is_delete=0)
+        diagnosis_result_list = cls.CASE_MODEL.annotate_field_count(queryset, annotate_field)
+        diagnosis_result_count_list = cls.format_statistic_count_data(annotate_field, diagnosis_result_list,
+                                                                      cls.CELL_SAMPLE_TYPE_MAP)
+        return diagnosis_result_count_list

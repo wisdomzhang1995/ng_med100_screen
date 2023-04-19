@@ -119,6 +119,8 @@ class CharField(BaseField):
     def formatting(self, value):
         if value is None:
             return ""
+        if isinstance(value, bytes):
+            return value.decode("utf-8")
         return str(value)
 
 

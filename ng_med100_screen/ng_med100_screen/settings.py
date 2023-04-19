@@ -17,7 +17,7 @@ from pathlib import Path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print("base dir ========================", BASE_DIR)
 TUOEN_DIR = os.path.join(BASE_DIR, "ng_med100_screen")
-STATIC_FILES_ROOT = os.path.join(BASE_DIR, "static_files")
+STATIC_FILES_ROOT = os.path.join(TUOEN_DIR, "static_files")
 sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, TUOEN_DIR)
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     # 'django.contrib.staticfiles',
     'model',
+    'frame'
 ]
 
 MIDDLEWARE = [

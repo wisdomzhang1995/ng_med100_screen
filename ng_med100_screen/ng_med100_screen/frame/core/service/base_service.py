@@ -39,6 +39,9 @@ class BaseApiService(Singleton):
         for _pro in protocols:
             self._protocol_set.add(_pro)
 
+    def get_protocols(self):
+        return list(self._protocol_set)
+
     def url_router(self, url):
         api = self._api_mapping.get(url, None)
         if api:

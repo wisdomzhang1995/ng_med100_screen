@@ -10,6 +10,9 @@ class JSONEncoder(json.JSONEncoder):
         elif isinstance(obj, bytes):
             return obj.decode("utf-8")
         if isinstance(obj, Decimal):
-            return str(obj)
+            try:
+                return float(obj)
+            except:
+                return str(obj)
         else:
             return json.JSONEncoder.default(self, obj)
