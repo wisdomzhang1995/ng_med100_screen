@@ -10,7 +10,6 @@ from model.models import TCase, TCaseExpert, TSiteChargingItem
 
 
 class OverviewManager(object):
-    CASE_MODEL = TCase
     REGISTERED = 300
     ADMISSIONED = 600
     SIGNED = 800
@@ -71,7 +70,7 @@ class OverviewManager(object):
 
     @classmethod
     def get_case_status_count(cls):
-        status_count = cls.CASE_MODEL.annotate_field_count(cls.get_realtime_queryset(cls.CASE_MODEL), "status")
+        status_count = TCase.annotate_field_count(cls.get_realtime_queryset(TCase), "status")
         statistics_status_list = cls.statistics_status_count(status_count)
         return statistics_status_list
 
@@ -93,8 +92,8 @@ class OverviewManager(object):
     @classmethod
     def get_case_diagnosis_type_count(cls):
         annotate_field = "info_diagnosis_type"
-        realtime_queryset = cls.get_realtime_queryset(cls.CASE_MODEL)
-        diagnosis_type_list = cls.CASE_MODEL.annotate_field_count(realtime_queryset, annotate_field)
+        realtime_queryset = cls.get_realtime_queryset(TCase)
+        diagnosis_type_list = TCase.annotate_field_count(realtime_queryset, annotate_field)
         diagnosis_type_count_list = cls.format_statistic_count_data(annotate_field, diagnosis_type_list,
                                                                     cls.DIAGNOSIS_TYPE_MAP)
         return diagnosis_type_count_list
@@ -102,8 +101,8 @@ class OverviewManager(object):
     @classmethod
     def get_case_diagnosis_result(cls):
         annotate_field = "disease_type"
-        realtime_queryset = cls.get_realtime_queryset(cls.CASE_MODEL)
-        diagnosis_result_list = cls.CASE_MODEL.annotate_field_count(realtime_queryset, annotate_field)
+        realtime_queryset = cls.get_realtime_queryset(TCase)
+        diagnosis_result_list = TCase.annotate_field_count(realtime_queryset, annotate_field)
         diagnosis_result_count_list = cls.format_statistic_count_data(annotate_field, diagnosis_result_list,
                                                                       cls.DISEASE_TYPE_MAP)
         return diagnosis_result_count_list
@@ -115,7 +114,7 @@ class OverviewManager(object):
 
     @classmethod
     def get_total_cast_count(cls):
-        total_cast_count = cls.CASE_MODEL.search().count()
+        total_cast_count = TCase.search().count()
         return total_cast_count
 
     @classmethod
@@ -219,13 +218,21 @@ class OverviewManager(object):
     @classmethod
     def get_cell_count(cls):
         annotate_field = "sample_type"
-        realtime_queryset = cls.get_realtime_queryset(cls.CASE_MODEL)
+        realtime_queryset = cls.get_realtime_queryset(TCase)
         queryset = realtime_queryset.filter(case_type=2, is_delete=0)
-        diagnosis_result_list = cls.CASE_MODEL.annotate_field_count(queryset, annotate_field)
+        diagnosis_result_list = TCase.annotate_field_count(queryset, annotate_field)
         diagnosis_result_count_list = cls.format_statistic_count_data(annotate_field, diagnosis_result_list,
                                                                       cls.CELL_SAMPLE_TYPE_MAP)
         return diagnosis_result_count_list
 
     @classmethod
     def get_cast_business_type(cls):
+        general_count = TCase.search(case_type=1).count()
+        # TNT是 染色方式:为1：巴氏染色且制片方法为3：液基制片
+        tnt_sql = cls.format_sql_of_debug(sql2, cls.format_realtime())
+        # 脱落细胞
+        cells_exfoliated_count = TCase.search(sample_type=21).count()
+        # 尿细胞
+
+
         pass

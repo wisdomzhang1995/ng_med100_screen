@@ -1,7 +1,6 @@
 from ng_med100_screen.frame.common.singleton import Singleton
 
 
-
 class BaseApiService(Singleton):
 
     _api_mapping = None

@@ -38,7 +38,7 @@ class Command(BaseCommand):
             "tags": list(swagger_doc.tags),
             "paths": swagger_doc.paths,
         }
-        # fix the chinese character garbled issue. --- by Dong 20210729
+        # fix the chinese character garbled issue. --- by shun 20210729
 
         with open(self.abs_json_filename, 'w', encoding='utf-8') as f:
             f.write(json.dumps(json_data, ensure_ascii=False, indent=4))

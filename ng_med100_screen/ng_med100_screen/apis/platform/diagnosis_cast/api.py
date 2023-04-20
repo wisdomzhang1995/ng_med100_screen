@@ -28,7 +28,7 @@ class GetCaseTypeMonthCount(NoAuthrizedApi):
 
     def execute(self, request):
         statistics_status_list = OverviewManager.get_case_status_count()
-        return statistics_status_list
+        return None
 
     def fill(self, response, data):
         response.data_list = data
@@ -57,7 +57,7 @@ class GetSubSpecialtyTypeMonthCount(NoAuthrizedApi):
 
     def execute(self, request):
         statistics_status_list = OverviewManager.get_case_status_count()
-        return statistics_status_list
+        return None
 
     def fill(self, response, data):
         response.data_list = data
@@ -86,7 +86,7 @@ class GetCellMonthCount(NoAuthrizedApi):
 
     def execute(self, request):
         statistics_status_list = OverviewManager.get_case_status_count()
-        return statistics_status_list
+        return None
 
     def fill(self, response, data):
         response.data_list = data
@@ -96,7 +96,8 @@ class GetCellMonthCount(NoAuthrizedApi):
 class GetFrozenMonthSummary(NoAuthrizedApi):
     request = with_metaclass(RequestFieldSet)
     response = with_metaclass(ResponseFieldSet)
-    response.data_list = ResponseField(ListField, desc="近6月冰冻月度汇总", fmt=DictField(desc="",conf={
+    response.data_list = ResponseField(ListField, desc="近6月冰冻月度汇总", fmt=DictField(desc="", conf={
+            "statistic_time": CharField(desc="统计时间"),
             "cast_count": CharField(desc="病例数"),
             "chain": IntField(desc="环比上月"),
     }))
@@ -115,7 +116,7 @@ class GetFrozenMonthSummary(NoAuthrizedApi):
 
     def execute(self, request):
         statistics_status_list = OverviewManager.get_case_status_count()
-        return statistics_status_list
+        return None
 
     def fill(self, response, data):
         response.data_list = data
@@ -126,8 +127,9 @@ class GetReportMonthGeneratedTime(NoAuthrizedApi):
     request = with_metaclass(RequestFieldSet)
     response = with_metaclass(ResponseFieldSet)
     response.data_list = ResponseField(ListField, desc="近6月报告平均输出时长", fmt=DictField(desc="", conf={
-            "cast_count": CharField(desc="病例数"),
-            "chain": IntField(desc="环比上月"),
+            "statistic_time": CharField(desc="统计时间"),
+            "avg_diagnosis_time": CharField(desc="平均诊断时长"),
+            "report_gen_time": IntField(desc="平均报告输出时长"),
     }))
 
     @classmethod
@@ -144,7 +146,7 @@ class GetReportMonthGeneratedTime(NoAuthrizedApi):
 
     def execute(self, request):
         statistics_status_list = OverviewManager.get_case_status_count()
-        return statistics_status_list
+        return None
 
     def fill(self, response, data):
         response.data_list = data

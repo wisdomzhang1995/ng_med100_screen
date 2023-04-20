@@ -6,10 +6,10 @@ import pysnooper
 
 from frame.core.api.request_parse import RequestFieldSet
 from frame.core.api.response_parse import ResponseField, ResponseFieldSet
-from frame.core.exception.api_error import api_errors, ApiCodes
+from frame.core.exception.api_error import api_errors, ApiCodes, ApiError
 from ng_med100_screen.apis import api_abs_path
 from ng_med100_screen.frame.tools.redis.redis_operator import redis_sys
-
+from django.conf import settings
 
 class ApiInterface(object):
 
@@ -75,6 +75,11 @@ class BaseApi(ApiHelper, ApiInterface):
     def fill(self, response, *args):
         raise NotImplementedError('Please implement this interface in subclass')
 
+    def validate_api_developed(self, respond_data):
+        if settings.DEBUG:
+            if respond_data is None:
+                raise api_errors(ApiCodes.API_NOT_DEVELOPED, "the api is to be develop")
+
     @classmethod
     def get_request_fields(cls):
         """get request fields"""
@@ -132,6 +137,7 @@ class BaseApi(ApiHelper, ApiInterface):
         print("=========================GGGGGGGGGGGGGGGGGGGGGGGGG", request)
         self.authorized(request, params)
         respond_data = self.enhance_execute()(request)
+        self.validate_api_developed(respond_data)
         respond_data = self.pack(self.response, respond_data)
         return respond_data
 

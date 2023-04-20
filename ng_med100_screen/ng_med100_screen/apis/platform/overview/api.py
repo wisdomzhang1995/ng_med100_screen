@@ -9,7 +9,7 @@ from frame.core.field.base import ListField, DictField, CharField, IntField
 class GetCaseStatusCount(NoAuthrizedApi):
     request = with_metaclass(RequestFieldSet)
     response = with_metaclass(ResponseFieldSet)
-    response.data_list = ResponseField(ListField, desc="状态分布数据", fmt=DictField(desc="",conf={
+    response.data_list = ResponseField(ListField, desc="状态分布数据", fmt=DictField(desc="", conf={
             "name": CharField(desc="名称"),
             "count": IntField(desc="数量"),
     }))
@@ -126,7 +126,7 @@ class GetCaseStatisticsCount(NoAuthrizedApi):
 class GetCaseSubSpecialty(NoAuthrizedApi):
     request = with_metaclass(RequestFieldSet)
     response = with_metaclass(ResponseFieldSet)
-    response.data_list = ResponseField(ListField, desc="专家病例总收入数", fmt=DictField(desc="",conf={
+    response.data_list = ResponseField(ListField, desc="专家病例总收入数", fmt=DictField(desc="", conf={
             "name": CharField(desc="名称"),
             "count": IntField(desc="数量"),
     }))
@@ -203,7 +203,7 @@ class GetCaseSiteDynamics(NoAuthrizedApi):
 class GetSpecimenCirculation(NoAuthrizedApi):
     request = with_metaclass(RequestFieldSet)
     response = with_metaclass(ResponseFieldSet)
-    response.data_list = ResponseField(ListField, desc="标本流转分布", fmt=DictField(desc="",conf={
+    response.data_list = ResponseField(ListField, desc="标本流转分布", fmt=DictField(desc="", conf={
             "name": CharField(desc="名称"),
             "count": IntField(desc="数量"),
     }))
@@ -232,7 +232,7 @@ class GetSpecimenCirculation(NoAuthrizedApi):
 class GetCastBusinessType(NoAuthrizedApi):
     request = with_metaclass(RequestFieldSet)
     response = with_metaclass(ResponseFieldSet)
-    response.data_list = ResponseField(ListField, desc="病例业务类型分布", fmt=DictField(desc="",conf={
+    response.data_list = ResponseField(ListField, desc="病例业务类型分布", fmt=DictField(desc="", conf={
             "name": CharField(desc="名称"),
             "count": IntField(desc="数量"),
     }))
@@ -251,7 +251,7 @@ class GetCastBusinessType(NoAuthrizedApi):
 
     def execute(self, request):
         sub_specialty_count_list = OverviewManager.get_cast_business_type()
-        return sub_specialty_count_list
+        return None
 
     def fill(self, response, data):
         response.data_list = data

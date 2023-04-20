@@ -1,6 +1,7 @@
 import traceback
 
 from frame.core.exception.api_error import ApiError
+from frame.core.exception.business_error import BusinessError
 from frame.core.exception.pro_error import pro_errors, ProtocolCodes, ProtocolError
 from ng_med100_screen.frame.common.dict_wrapper import DictWrapper
 from ng_med100_screen.frame.common.singleton import Singleton
@@ -86,10 +87,14 @@ class BaseProtocol(Singleton, ServiceManager):
             response = self.succeed(result)
             return response
         except ApiError as e:
-            print(f"dong ------------>ApiError: {e}")
+            print(f"shun ------------>ApiError: {e}")
             return self.failed(e)
         except ProtocolError as e:
             print(f"shun ------------>ProtocolError: {e}")
+            return self.failed(e)
+        # 业务逻辑返回错误
+        except BusinessError as e:
+            print(f"shun ------------>BusinessError: {e}")
             return self.failed(e)
         except Exception as e:
             print(traceback.print_exc())

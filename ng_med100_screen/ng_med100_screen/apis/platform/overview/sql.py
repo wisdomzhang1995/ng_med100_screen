@@ -65,3 +65,14 @@ sql5 = """
 select count(*) as count from t_case_advice where 1=1 {condition}
 """
 
+tnt_count_sql = """
+        select count(*) as count from t_case a
+        left join t_case_waxblock b on a.case_id=b.case_id 
+        where cell_make_type=3 and cell_dye_type=1 {condition}
+"""
+
+urine_cell_sql = """
+        select count(*) as count from t_case a
+        left join t_case_sample b on a.case_id=b.case_id 
+        where cell_make_type=3 and cell_dye_type=1 {condition} 
+"""

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @File    : enhance_debug
-# @Project : ifw_dong
+# @Project : ifw_shun
 # @Time    : 2021/6/29 10:05
 """                     
                                       /             
@@ -21,7 +21,7 @@ from frame.utils.redis.redisoperator import redis_sys
 class Command(BaseCommand):
     help = """
             Enhance online debug, you gonna love it!
-                            ---inspired by awesome Dong.
+                            ---inspired by awesome shun.
             """
 
     EX_ARGS = ['thread_info', 'normalize', 'depth', 'output',
@@ -64,4 +64,4 @@ class Command(BaseCommand):
         kwargs = redis_sys.get("awesome_kwargs")
         kwargs = json.loads(kwargs) if kwargs else {}
 
-        print(f'dong -------------------->input ex_kwargs: {kwargs} ')
+        print(f'shun -------------------->input ex_kwargs: {kwargs} ')

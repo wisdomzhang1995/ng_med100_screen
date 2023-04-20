@@ -19,6 +19,7 @@ class ApiCodes(object):
     INTERFACE_TOKEN_INVALIED = 30007
     INTERFACE_TOKEN_DUE = 30008
     INTERFACE_TOKEN_RENEW_ERROR = 30009
+    API_NOT_DEVELOPED = 30010
 
     CHOICES = (
         (INTERFACE_NOT_EXIST, '请求的接口不存在'),
@@ -30,6 +31,7 @@ class ApiCodes(object):
         (INTERFACE_TOKEN_DUE, 'auth_token已过期,请重新获取'),
         (INTERFACE_TOKEN_RENEW_ERROR, 'auth_token续签失败,请重新获取'),
         (INTERFACE_PARATERS_TYPE_ERROR, "参数({})值非法，请参考API文档"),
+        (API_NOT_DEVELOPED, "接口待开发, 请联系后端开发者"),
     )
 
 
